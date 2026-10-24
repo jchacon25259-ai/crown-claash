@@ -28,9 +28,10 @@ async def broadcast():
    try: await p.send(msg)
    except: pass
 async def handler(ws):
-  global started,message
- try: slot=players.index(None)
- except ValueError:
+    global started, message
+    try:
+        slot = players.index(None)
+    except ValueError:
   await ws.send(json.dumps({'type':'error','message':'Room full. Two players maximum.'}));await ws.close();return
  players[slot]=ws
  await ws.send(json.dumps({'type':'hello','player':slot}))
