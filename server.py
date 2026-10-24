@@ -1,3 +1,4 @@
+import os
 import asyncio, json, math, random, time
 from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
@@ -27,7 +28,7 @@ async def broadcast():
    try: await p.send(msg)
    except: pass
 async def handler(ws):
- global started,message
+  global started,message
  try: slot=players.index(None)
  except ValueError:
   await ws.send(json.dumps({'type':'error','message':'Room full. Two players maximum.'}));await ws.close();return
@@ -84,6 +85,6 @@ async def main():
  async def process_request(conn,req):
   if req.path not in ('/','/index.html'):return Response(404,'Not Found',Headers(),b'Not found')
   return Response(200,'OK',Headers([('Content-Type','text/html; charset=utf-8'),('Cache-Control','no-store')]),(ROOT/'index.html').read_bytes())
- async with serve(handler,'0.0.0.0',8765,process_request=process_request,max_size=4096):
-  print('Crown Clash server running on port 8765');await loop()
+ async with serve(handler,'0.0.0.0',int(os.environ.get('PORT',8765)),process_request=process_request,max_size=4096):
+  print('Crown Clash server running');await loop()
 if __name__=='__main__':asyncio.run(main())
